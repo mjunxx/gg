@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills | Edmar Almuete</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <div class="container">
+    <header>
+      <h1>My Skills</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="skills.html" class="active">Skills</a>
+        <a href="achievements.html">Achievements</a>
+      </nav>
+    </header>
+
+    <section class="page-content">
+      <ul>
+        <li>💻 Web Development (HTML, CSS, JavaScript)</li>
+        <li>⚙️ ERP System Integration</li>
+        <li>🧠 Database Management</li>
+        <li>🎨 UI/UX Design</li>
+      </ul>
+      <div class="page-buttons">
+        <a href="about.html" class="btn prev">⮜ Previous</a>
+        <a href="achievements.html" class="btn next">Next ⮕</a>
+      </div>
+    </section>
+
+   <div class="nav-buttons">
+      <button onclick="window.location.href='about.html'">← Previous</button>
+      <button onclick="window.location.href='achievements.html'">Next →</button>
+    </div>
+
+    <footer>© 2025 Edmar Almuete | All rights reserved</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="background.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
