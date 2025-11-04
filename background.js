@@ -28,7 +28,7 @@ const starMaterial = new THREE.PointsMaterial({
   color: 0xffffff,
   size: 1.2,
   transparent: true,
-  opacity: 0.8
+  opacity: 1.0
 });
 const stars = new THREE.Points(starGeometry, starMaterial);
 scene.add(stars);
@@ -36,7 +36,7 @@ scene.add(stars);
 // ===== Glowing 3D Energy Sphere =====
 const lineGroup = new THREE.Group();
 const sphereRadius = 6;
-const lineCount = 100; // number of energy lines
+const lineCount = 80; // number of energy lines
 
 function createEnergyLine(radius, color, speed, direction) {
   const points = [];
@@ -125,50 +125,3 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-// ===== Smooth Galaxy Background =====
-const galaxyGeometry = new THREE.RingGeometry(400, 800, 128);
-const galaxyMaterial = new THREE.MeshBasicMaterial({
-  color: 0x5511aa,
-  side: THREE.DoubleSide,
-  transparent: true,
-  opacity: 0.05,
-});
-const galaxy = new THREE.Mesh(galaxyGeometry, galaxyMaterial);
-galaxy.rotation.x = Math.PI / 2;
-scene.add(galaxy);
-
-// ===== Optimized Animation (no double render loops) =====
-let time = 0;
-function animate() {
-  requestAnimationFrame(animate);
-  time += 0.01;
-
-  // Soft star rotation (already subtle)
-  stars.rotation.y += 0.0002;
-  stars.rotation.x += 0.0001;
-
-  // Slow galaxy drift
-  galaxy.rotation.z += 0.00005;
-  galaxy.material.opacity = 0.04 + Math.sin(time * 0.5) * 0.01;
-
-  // Animate glowing lines
-  lineGroup.children.forEach((line, i) => {
-    const { speed, direction } = line.userData;
-    if (direction === "clockwise") line.rotation.y += speed;
-    else if (direction === "counter") line.rotation.y -= speed;
-    else if (direction === "updown") {
-      line.rotation.x = Math.sin(time * 0.5 + i) * 0.4;
-      line.rotation.z = Math.cos(time * 0.3 + i) * 0.4;
-    }
-  });
-
-  // Gentle pulse and sphere rotation
-  const pulse = 1 + Math.sin(time * 0.8) * 0.05;
-  lineGroup.scale.set(pulse, pulse, pulse);
-  lineGroup.rotation.y += 0.001;
-
-  renderer.render(scene, camera);
-}
-
-animate();
