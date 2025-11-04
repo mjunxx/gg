@@ -125,3 +125,31 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// ===== Optional Galaxy Glow and Extra Star Drift =====
+const galaxyGeometry = new THREE.RingGeometry(300, 600, 64);
+const galaxyMaterial = new THREE.MeshBasicMaterial({
+  color: 0x6611aa,
+  side: THREE.DoubleSide,
+  transparent: true,
+  opacity: 0.08
+});
+const galaxy = new THREE.Mesh(galaxyGeometry, galaxyMaterial);
+galaxy.rotation.x = Math.PI / 2;
+scene.add(galaxy);
+
+// Animate galaxy drift with stars
+let galaxyTime = 0;
+const oldAnimate = animate;
+animate = function () {
+  requestAnimationFrame(animate);
+  galaxyTime += 0.0003;
+
+  // Gentle galaxy rotation
+  galaxy.rotation.z += 0.0001;
+  galaxy.material.opacity = 0.05 + Math.sin(galaxyTime * 2) * 0.02;
+
+  // Keep your original animation behavior
+  oldAnimate();
+};
+
