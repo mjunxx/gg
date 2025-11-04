@@ -126,30 +126,49 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ===== Optional Galaxy Glow and Extra Star Drift =====
-const galaxyGeometry = new THREE.RingGeometry(300, 600, 64);
+// ===== Smooth Galaxy Background =====
+const galaxyGeometry = new THREE.RingGeometry(400, 800, 128);
 const galaxyMaterial = new THREE.MeshBasicMaterial({
-  color: 0x6611aa,
+  color: 0x5511aa,
   side: THREE.DoubleSide,
   transparent: true,
-  opacity: 0.08
+  opacity: 0.05,
 });
 const galaxy = new THREE.Mesh(galaxyGeometry, galaxyMaterial);
 galaxy.rotation.x = Math.PI / 2;
 scene.add(galaxy);
 
-// Animate galaxy drift with stars
-let galaxyTime = 0;
-const oldAnimate = animate;
-animate = function () {
+// ===== Optimized Animation (no double render loops) =====
+let time = 0;
+function animate() {
   requestAnimationFrame(animate);
-  galaxyTime += 0.0003;
+  time += 0.01;
 
-  // Gentle galaxy rotation
-  galaxy.rotation.z += 0.0001;
-  galaxy.material.opacity = 0.05 + Math.sin(galaxyTime * 2) * 0.02;
+  // Soft star rotation (already subtle)
+  stars.rotation.y += 0.0002;
+  stars.rotation.x += 0.0001;
 
-  // Keep your original animation behavior
-  oldAnimate();
-};
+  // Slow galaxy drift
+  galaxy.rotation.z += 0.00005;
+  galaxy.material.opacity = 0.04 + Math.sin(time * 0.5) * 0.01;
 
+  // Animate glowing lines
+  lineGroup.children.forEach((line, i) => {
+    const { speed, direction } = line.userData;
+    if (direction === "clockwise") line.rotation.y += speed;
+    else if (direction === "counter") line.rotation.y -= speed;
+    else if (direction === "updown") {
+      line.rotation.x = Math.sin(time * 0.5 + i) * 0.4;
+      line.rotation.z = Math.cos(time * 0.3 + i) * 0.4;
+    }
+  });
+
+  // Gentle pulse and sphere rotation
+  const pulse = 1 + Math.sin(time * 0.8) * 0.05;
+  lineGroup.scale.set(pulse, pulse, pulse);
+  lineGroup.rotation.y += 0.001;
+
+  renderer.render(scene, camera);
+}
+
+animate();
